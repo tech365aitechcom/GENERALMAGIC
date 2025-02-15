@@ -50,7 +50,7 @@ const PhoneVerification = ({ onClose }) => {
         `${baseURL}/api/plan/make-call`,
         {
           callTo: phone,
-          assistantId: "53e547eb-4b18-4d36-8ff1-cd39d79865ae",
+          assistantId: "889faf8a-57c6-42ac-92b3-08125d9c592a",
         },
         {
           headers: {
@@ -245,12 +245,7 @@ export default function Home() {
               >
                 Try Now
               </button> */}
-              <button
-                onClick={() => setIsOpen(true)}
-                className="px-6 md:px-10 py-2 md:py-4 text-base md:text-lg font-semibold text-white transition-all bg-gradient-to-r from-blue-600 to-blue-700 rounded-full hover:shadow-lg hover:scale-105"
-              >
-                Schedule a Call
-              </button>
+
               <button
                 onClick={() => setIsVapiCall(true)}
                 className="px-6 md:px-10 py-2 md:py-4 text-base md:text-lg font-semibold text-white transition-all bg-gradient-to-r from-blue-600 to-blue-700 rounded-full hover:shadow-lg hover:scale-105"
@@ -265,6 +260,14 @@ export default function Home() {
               <FeatureCard key={index} {...feature} />
             ))}
           </div>
+        </div>
+        <div className="flex justify-center mt-10">
+          <button
+            onClick={() => setIsOpen(true)}
+            className="px-6 md:px-10 py-2 md:py-4 text-base md:text-lg font-semibold text-white transition-all bg-gradient-to-r from-blue-600 to-blue-700 rounded-full hover:shadow-lg hover:scale-105"
+          >
+            Schedule a Call
+          </button>{" "}
         </div>
       </div>
 
