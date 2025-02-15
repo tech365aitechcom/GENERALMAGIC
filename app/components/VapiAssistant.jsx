@@ -56,7 +56,7 @@ const VapiAssistant = ({ setIsVapiCall }) => {
 
   const startCall = () => {
     setConnecting(true);
-    vapi.start("47f10f70-a7ae-4d9c-9df4-b159006d02da");
+    vapi.start("93206465-47f4-4e84-a9f3-3f7b6939e68d");
   };
 
   const endCall = () => {
