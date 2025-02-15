@@ -30,9 +30,8 @@ const VapiAssistant = ({ setIsVapiCall }) => {
   }, []);
 
   const handleError = useCallback((error) => {
-    console.error(error);
     setConnecting(false);
-    toast.error("Call error occurred.");
+    toast.error(error.error.message ?? "Call error occurred.");
   }, []);
 
   const handleUserSpeaking = useCallback((isSpeaking) => {
