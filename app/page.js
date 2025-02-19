@@ -35,21 +35,199 @@ const FeatureCard = ({ icon: Icon, title, description }) => (
   </div>
 );
 
+// const PhoneVerification = ({ onClose }) => {
+//   const [phone, setPhone] = useState("");
+//   const [isVerified, setIsVerified] = useState(false);
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [error, setError] = useState("");
+
+//   const handleSubmit = async () => {
+//     setIsLoading(true);
+//     setError("");
+
+//     try {
+//       await axios.post(
+//         `${baseURL}/api/plan/make-call`,
+//         {
+//           callTo: phone,
+//           assistantId: "606ca662-64d6-4e5c-9b53-b0f9d508ac83",
+//         },
+//         {
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//         }
+//       );
+
+//       setIsVerified(true);
+//     } catch (err) {
+//       setError(
+//         err.response?.data?.message ||
+//           err.message ||
+//           "Something went wrong. Please try again."
+//       );
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const handlePhoneChange = (e) => {
+//     setPhone(e.target.value);
+//   };
+
+//   return (
+//     <div className="fixed inset-0 z-50 overflow-y-auto">
+//       <div className="flex items-center justify-center min-h-screen p-4">
+//         <div
+//           className="fixed inset-0 bg-black/50 transition-opacity"
+//           onClick={onClose}
+//         />
+
+//         <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 transform transition-all">
+//           <button
+//             onClick={onClose}
+//             className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 transition-colors"
+//           >
+//             <X className="w-5 h-5" />
+//           </button>
+
+//           <div className="text-center mb-6">
+//             <h2 className="text-2xl font-bold text-gray-900">
+//               Provide Your Phone
+//             </h2>
+//             <p className="mt-2 text-sm text-gray-500">We'll get back to you</p>
+//           </div>
+
+//           {error && (
+//             <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
+//               {error}
+//             </div>
+//           )}
+
+//           {!isVerified ? (
+//             <div className="space-y-4">
+//               <div>
+//                 <label
+//                   htmlFor="phone"
+//                   className="block text-sm font-medium text-gray-700 mb-1"
+//                 >
+//                   Phone Number
+//                 </label>
+//                 <input
+//                   id="phone"
+//                   type="tel"
+//                   placeholder="Enter Phone No"
+//                   value={phone}
+//                   onChange={handlePhoneChange}
+//                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+//                   disabled={isLoading}
+//                 />
+//               </div>
+//               <button
+//                 onClick={handleSubmit}
+//                 disabled={isLoading}
+//                 className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+//               >
+//                 {isLoading ? (
+//                   <span className="flex items-center justify-center">
+//                     <svg
+//                       className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+//                       xmlns="http://www.w3.org/2000/svg"
+//                       fill="none"
+//                       viewBox="0 0 24 24"
+//                     >
+//                       <circle
+//                         className="opacity-25"
+//                         cx="12"
+//                         cy="12"
+//                         r="10"
+//                         stroke="currentColor"
+//                         strokeWidth="4"
+//                       ></circle>
+//                       <path
+//                         className="opacity-75"
+//                         fill="currentColor"
+//                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+//                       ></path>
+//                     </svg>
+//                     Processing...
+//                   </span>
+//                 ) : (
+//                   "Call Me"
+//                 )}
+//               </button>
+//             </div>
+//           ) : (
+//             <div className="text-center space-y-4">
+//               <div className="flex items-center justify-center w-16 h-16 mx-auto bg-green-100 rounded-full">
+//                 <svg
+//                   className="w-8 h-8 text-green-500"
+//                   fill="none"
+//                   viewBox="0 0 24 24"
+//                   stroke="currentColor"
+//                 >
+//                   <path
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                     strokeWidth={2}
+//                     d="M5 13l4 4L19 7"
+//                   />
+//                 </svg>
+//               </div>
+//               <p className="text-gray-600">We'll call you shortly!</p>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
 const PhoneVerification = ({ onClose }) => {
   const [phone, setPhone] = useState("");
   const [isVerified, setIsVerified] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get(
+          "https://api.npoint.io/900fa8cc45c942a0c38e"
+        );
+        setCountries(response.data);
+        // Set default country
+        if (response.data.length > 0) {
+          setSelectedCountry(response.data[0]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch countries:", err);
+      }
+    };
+
+    fetchCountries();
+  }, []);
+
+  const filteredCountries = countries.filter(
+    (country) =>
+      country.country.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      country.code.includes(searchQuery)
+  );
 
   const handleSubmit = async () => {
     setIsLoading(true);
     setError("");
 
     try {
+      const fullPhone = `+${selectedCountry?.code}${phone}`;
       await axios.post(
         `${baseURL}/api/plan/make-call`,
         {
-          callTo: phone,
+          callTo: fullPhone,
           assistantId: "606ca662-64d6-4e5c-9b53-b0f9d508ac83",
         },
         {
@@ -95,7 +273,9 @@ const PhoneVerification = ({ onClose }) => {
             <h2 className="text-2xl font-bold text-gray-900">
               Provide Your Phone
             </h2>
-            <p className="mt-2 text-sm text-gray-500">We'll get back to you</p>
+            <p className="mt-2 text-sm text-gray-500">
+              We&apos;ll get back to you
+            </p>
           </div>
 
           {error && (
@@ -113,19 +293,66 @@ const PhoneVerification = ({ onClose }) => {
                 >
                   Phone Number
                 </label>
-                <input
-                  id="phone"
-                  type="tel"
-                  placeholder="Enter Phone No"
-                  value={phone}
-                  onChange={handlePhoneChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <div className="flex">
+                    <div className="relative">
+                      <button
+                        type="button"
+                        className="flex items-center px-3 py-3 border border-r-0 border-gray-300 rounded-l-lg bg-gray-50 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      >
+                        <span className="mr-2 text-black">
+                          +{selectedCountry?.code}
+                        </span>
+                        <span className="text-black">▼</span>
+                      </button>
+
+                      {isDropdownOpen && (
+                        <div className="absolute z-10 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg">
+                          <div className="p-2">
+                            <input
+                              type="text"
+                              placeholder="Search countries..."
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                              className="text-black w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                          </div>
+                          <div className="max-h-48 overflow-y-auto">
+                            {filteredCountries.map((country) => (
+                              <button
+                                key={country.iso}
+                                className="text-black w-full px-4 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 transition-colors"
+                                onClick={() => {
+                                  setSelectedCountry(country);
+                                  setIsDropdownOpen(false);
+                                }}
+                              >
+                                <span className="mr-2">{country.country}</span>
+                                <span className="text-black">
+                                  +{country.code}
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <input
+                      id="phone"
+                      type="tel"
+                      placeholder="Enter Phone No"
+                      value={phone}
+                      onChange={handlePhoneChange}
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      disabled={isLoading}
+                    />
+                  </div>
+                </div>
               </div>
               <button
                 onClick={handleSubmit}
-                disabled={isLoading}
+                disabled={isLoading || !selectedCountry}
                 className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
@@ -174,7 +401,7 @@ const PhoneVerification = ({ onClose }) => {
                   />
                 </svg>
               </div>
-              <p className="text-gray-600">We'll call you shortly!</p>
+              <p className="text-gray-600">We&apos;ll call you shortly!</p>
             </div>
           )}
         </div>
